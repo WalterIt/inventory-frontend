@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 import productService from "./productService";
+import { toast } from "react-toastify";
 
 const initialState = {
   product: null,
@@ -14,7 +14,7 @@ const initialState = {
   category: [],
 };
 
-// CREATE NEW PRODUCT
+// Create New Product
 export const createProduct = createAsyncThunk(
   "products/create",
   async (formData, thunkAPI) => {
@@ -33,7 +33,7 @@ export const createProduct = createAsyncThunk(
   }
 );
 
-// GET ALL PRODUCTS
+// Get all products
 export const getProducts = createAsyncThunk(
   "products/getAll",
   async (_, thunkAPI) => {
@@ -52,7 +52,7 @@ export const getProducts = createAsyncThunk(
   }
 );
 
-// DELETE A  PRODUCT
+// Delete a Product
 export const deleteProduct = createAsyncThunk(
   "products/delete",
   async (id, thunkAPI) => {
@@ -71,7 +71,7 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
-// GET A  PRODUCT
+// Get a product
 export const getProduct = createAsyncThunk(
   "products/getProduct",
   async (id, thunkAPI) => {
@@ -89,8 +89,7 @@ export const getProduct = createAsyncThunk(
     }
   }
 );
-
-// UPDATE A  PRODUCT
+// Update product
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async ({ id, formData }, thunkAPI) => {
@@ -116,50 +115,41 @@ const productSlice = createSlice({
     CALC_STORE_VALUE(state, action) {
       const products = action.payload;
       const array = [];
-
       products.map((item) => {
         const { price, quantity } = item;
         const productValue = price * quantity;
         return array.push(productValue);
       });
-
       const totalValue = array.reduce((a, b) => {
         return a + b;
       }, 0);
-
       state.totalStoreValue = totalValue;
     },
     CALC_OUTOFSTOCK(state, action) {
       const products = action.payload;
       const array = [];
-
       products.map((item) => {
         const { quantity } = item;
 
         return array.push(quantity);
       });
-
       let count = 0;
       array.forEach((number) => {
         if (number === 0 || number === "0") {
-          count++;
+          count += 1;
         }
       });
-
       state.outOfStock = count;
     },
     CALC_CATEGORY(state, action) {
       const products = action.payload;
       const array = [];
-
       products.map((item) => {
         const { category } = item;
 
         return array.push(category);
       });
-
       const uniqueCategory = [...new Set(array)];
-
       state.category = uniqueCategory;
     },
   },
@@ -174,7 +164,7 @@ const productSlice = createSlice({
         state.isError = false;
         console.log(action.payload);
         state.products.push(action.payload);
-        toast.success("Product added Successfully!");
+        toast.success("Product added successfully");
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.isLoading = false;
@@ -189,7 +179,7 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        // console.log(action.payload);
+        console.log(action.payload);
         state.products = action.payload;
       })
       .addCase(getProducts.rejected, (state, action) => {
@@ -205,7 +195,7 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        toast.success("Product deleted Successfully!");
+        toast.success("Product deleted successfully");
       })
       .addCase(deleteProduct.rejected, (state, action) => {
         state.isLoading = false;
@@ -235,7 +225,7 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.isError = false;
-        toast.success("Product updated Successfully!");
+        toast.success("Product updated successfully");
       })
       .addCase(updateProduct.rejected, (state, action) => {
         state.isLoading = false;

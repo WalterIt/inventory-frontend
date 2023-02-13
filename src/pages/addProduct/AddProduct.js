@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/loader/Loader";
@@ -15,50 +15,52 @@ const initialState = {
   price: "",
 };
 
-export default function AddProduct() {
+const AddProduct = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(initialState);
   const [productImage, setProductImage] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [description, setDescription] = useState("");
+
   const isLoading = useSelector(selectIsLoading);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const { name, category, quantity, price } = product;
+  const { name, category, price, quantity } = product;
 
-  function handleInputChange(e) {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProduct({ ...product, [name]: value });
-  }
+  };
 
-  function handleImageChange(e) {
+  const handleImageChange = (e) => {
     setProductImage(e.target.files[0]);
     setImagePreview(URL.createObjectURL(e.target.files[0]));
-  }
+  };
 
-  function generateSKU(category) {
+  const generateKSKU = (category) => {
     const letter = category.slice(0, 3).toUpperCase();
     const number = Date.now();
     const sku = letter + "-" + number;
     return sku;
-  }
+  };
 
-  async function saveProduct(e) {
+  const saveProduct = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("sku", generateKSKU(category));
     formData.append("category", category);
-    formData.append("quantity", quantity);
+    formData.append("quantity", Number(quantity));
     formData.append("price", price);
     formData.append("description", description);
     formData.append("image", productImage);
-    formData.append("sku", generateSKU(category));
 
     console.log(...formData);
 
     await dispatch(createProduct(formData));
+
     navigate("/dashboard");
-  }
+  };
 
   return (
     <div>
@@ -76,4 +78,6 @@ export default function AddProduct() {
       />
     </div>
   );
-}
+};
+
+export default AddProduct;
